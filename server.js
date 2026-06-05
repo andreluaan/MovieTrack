@@ -1,13 +1,35 @@
-const express = require('express');
+const express    = require('express');
+const cors       = require('cors');
+const path       = require('path');
+
+const { InMemoryMovieRepository } = require('./src/models/MovieRepository');
+const MovieController              = require('./src/controllers/MovieController');
+const createMovieRouter            = require('./src/routes/movieRoutes');
+const { error, notFound }   = require('./src/middleware/error');
 
 const app  = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-app.use(express.json()); // permite receber JSON no body das requisições
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', (req, res) => {
-  res.send('🎬 Movietrack funcionando!');
+// Injeção de dependência — o Controller recebe o repositório
+const repository  = new InMemoryMovieRepository();
+const controller  = new MovieController(repository);
+const movieRouter = createMovieRouter(controller);
+
+// Rotas da API
+app.use('/api/movies', movieRouter);
+app.get('/api/genres', controller.getGenres);
+
+// Qualquer rota desconhecida serve o index.html (SPA)
+app.get('/{*path}', (req, res) => {
+  if (req.path.startsWith('/api')) return notFound(req, res);
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
+app.use(error);
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
