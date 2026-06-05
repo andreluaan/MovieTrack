@@ -3,7 +3,6 @@ const express = require('express');
 function createTmdbRouter() {
   const router = express.Router();
 
-  // GET /api/tmdb/search?q=nome+do+filme
   router.get('/search', async (req, res) => {
     const { q } = req.query;
 
