@@ -1,11 +1,14 @@
+require('dotenv').config();
 const express    = require('express');
 const cors       = require('cors');
 const path       = require('path');
+
 
 const { InMemoryMovieRepository } = require('./src/models/MovieRepository');
 const MovieController              = require('./src/controllers/MovieController');
 const createMovieRouter            = require('./src/routes/movieRoutes');
 const { error, notFound }   = require('./src/middleware/error');
+const createTmdbRouter = require('./src/routes/tmdbRoutes');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -21,6 +24,7 @@ const movieRouter = createMovieRouter(controller);
 // Rotas da API
 app.use('/api/movies', movieRouter);
 app.get('/api/genres', controller.getGenres);
+app.use('/api/tmdb', createTmdbRouter());
 
 app.get('/{*path}', (request, response) => {
   if (request.path.startsWith('/api')) return notFound(request, response);
