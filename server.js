@@ -14,7 +14,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Injeção de dependência — o Controller recebe o repositório
 const repository  = new InMemoryMovieRepository();
 const controller  = new MovieController(repository);
 const movieRouter = createMovieRouter(controller);
@@ -23,9 +22,8 @@ const movieRouter = createMovieRouter(controller);
 app.use('/api/movies', movieRouter);
 app.get('/api/genres', controller.getGenres);
 
-// Qualquer rota desconhecida serve o index.html (SPA)
-app.get('/{*path}', (req, res) => {
-  if (req.path.startsWith('/api')) return notFound(req, res);
+app.get('/{*path}', (request, response) => {
+  if (request.path.startsWith('/api')) return notFound(request, response);
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
