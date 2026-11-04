@@ -1,15 +1,19 @@
 {
   "name": "movietrack",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Aplicação para gerenciar filmes assistidos e a lista de filmes para assistir",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "express",
+    "tmdb",
+    "filmes"
+  ],
+  "author": "André Luan",
+  "license": "MIT",
   "type": "commonjs",
   "dependencies": {
     "cors": "^2.8.6",
